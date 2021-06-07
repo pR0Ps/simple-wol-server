@@ -1,5 +1,6 @@
 <script>
   import Table from "./Table.svelte";
+  import Alert from "./Alert.svelte";
 </script>
 
 <main>
@@ -11,6 +12,7 @@
     <p>Click the status buttons to refresh.</p>
     <p>Wake devices up by clicking the power buttons.</p>
   </details>
+  <Alert />
 </main>
 <footer>
   Powered by <a href="https://github.com/pR0Ps/simple-wol-server">simple-wol-server</a>
