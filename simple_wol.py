@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
 import functools
+import logging
 import socket
 import subprocess
 import time
 
-from bottle import post, get, request, run, static_file
+from flask import Flask, request, send_from_directory
 from wakeonlan import send_magic_packet
 
 
@@ -13,6 +14,11 @@ HOSTS = {
     # fill in your servers
     "server1.lan": "MM:MM:MM:MM:MM:MM", # not a real mac address
 }
+
+
+__log__ = logging.getLogger(__name__)
+
+app = Flask(__name__)
 
 
 def ttl_lru_cache(ttl=None, maxsize=128, typed=False):
@@ -43,6 +49,7 @@ def resolve_hostname(host):
     try:
         return socket.gethostbyname(host)
     except socket.error:
+        __log__.error("Failed to resolve '%s'", host, exc_info=True)
         return None
 
 
@@ -55,13 +62,14 @@ def is_up(host):
     ) == 0
 
 
-@get('/')
-@get('/<filename:path>')
-def send_static(filename="index.html"):
-    return static_file(filename, root='./public/')
+@app.route("/")
+@app.route("/<path:path>")
+def root(path="index.html"):
+    """Serves the JS application"""
+    return send_from_directory("static", path)
 
 
-@get("/hosts")
+@app.route("/hosts")
 def hosts():
     return {
         "val": list(HOSTS),
@@ -69,9 +77,9 @@ def hosts():
     }
 
 
-@get("/check")
+@app.route("/check")
 def check():
-    if not (host := request.query.get("host")) or host not in HOSTS:
+    if not (host := request.args.get("host")) or host not in HOSTS:
         return {
             "val": None,
             "msg": host and f"Invalid host '{host}'" or "No host specified"
@@ -86,6 +94,8 @@ def check():
     try:
         up = is_up(ip)
     except Exception:
+        __log__.error("Failed to ping '%s' (%s)", host, ip, exc_info=True)
+
         return {
             "val": None,
             "msg": f"Failed to ping '{host}'"
@@ -97,7 +107,7 @@ def check():
     }
 
 
-@post("/wake")
+@app.route("/wake", methods=["POST"])
 def wake():
     if not (data := request.json) or (host := data.get("host")) not in HOSTS:
         return {
@@ -108,16 +118,23 @@ def wake():
     try:
         send_magic_packet(HOSTS[host])
     except Exception:
+        __log__.error(
+            "Failed to send WOL packet to '%s' (%s)",
+            host, HOSTS[host],
+            exc_info=True
+        )
         return {
             "val": False,
             "msg": f"Failed to send wake on LAN packet to '{host}'"
         }
 
+    __log__.info("Sent WOL packet to '%s' (%s)", host, HOSTS[host])
+
     return {
         "val": True,
-        "msg": f"Sent wake on LAN packet to {host}. This is not a guarantee that it will turn on."
+        "msg": f"Sent wake on LAN packet to {host}."
     }
 
 
 if __name__ == "__main__":
-    run(host='0.0.0.0', port=8080, debug=True, reloader=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
