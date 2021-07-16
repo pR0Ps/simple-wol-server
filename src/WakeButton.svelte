@@ -8,7 +8,7 @@
   let promise;
 
   async function wakeHost() {
-    return await fetch("/wake", {
+    return await fetch("/api/wake", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ host: host }),

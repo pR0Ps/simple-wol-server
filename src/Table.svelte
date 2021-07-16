@@ -7,7 +7,7 @@
   let promise = getHosts();
 
   async function getHosts() {
-    return await fetch("/hosts")
+    return await fetch("/api/hosts")
       .then((resp) => {
         if (!resp.ok) {
           throw new Error(`${resp.status}: ${resp.statusText}`);

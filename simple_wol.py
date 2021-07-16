@@ -69,7 +69,7 @@ def root(path="index.html"):
     return send_from_directory("static", path)
 
 
-@app.route("/hosts")
+@app.route("/api/hosts")
 def hosts():
     return {
         "val": list(HOSTS),
@@ -77,7 +77,7 @@ def hosts():
     }
 
 
-@app.route("/check")
+@app.route("/api/check")
 def check():
     if not (host := request.args.get("host")) or host not in HOSTS:
         return {
@@ -107,7 +107,7 @@ def check():
     }
 
 
-@app.route("/wake", methods=["POST"])
+@app.route("/api/wake", methods=["POST"])
 def wake():
     if not (data := request.json) or (host := data.get("host")) not in HOSTS:
         return {

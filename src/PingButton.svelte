@@ -10,7 +10,7 @@
   async function getHostStatus() {
     status = null;
 
-    let url = new URL("/check", location.href);
+    let url = new URL("/api/check", location.href);
     url.searchParams.append("host", host);
     return await fetch(url)
       .then((resp) => {
