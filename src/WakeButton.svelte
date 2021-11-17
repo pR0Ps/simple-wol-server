@@ -4,6 +4,7 @@
 
   import Spinner from "./Spinner.svelte";
   import IconButton from "./IconButton.svelte";
+  import show from "./alert.js";
 
   let promise;
 
@@ -23,9 +24,11 @@
         if (!data.val) {
           throw new Error(data.msg);
         }
+        show("message", data.msg);
         return data;
       })
       .catch((error) => {
+        show("err", error);
         return null;
       });
   }

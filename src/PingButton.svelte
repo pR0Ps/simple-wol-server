@@ -4,10 +4,11 @@
 
   import Spinner from "./Spinner.svelte";
   import IconButton from "./IconButton.svelte";
+  import show from "./alert.js";
 
-  let promise = getHostStatus();
+  let promise = getHostStatus(false);
 
-  async function getHostStatus() {
+  async function getHostStatus(showMsg=true) {
     status = null;
 
     let url = new URL("/api/check", location.href);
@@ -23,9 +24,13 @@
         if (data.val == null) {
           throw new Error(data.msg);
         }
+        if (showMsg){
+          show("message", data.msg);
+        }
         status = data.val;
       })
       .catch((error) => {
+        show("err", error);
         status = null;
       });
   }
