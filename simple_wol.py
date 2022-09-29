@@ -23,7 +23,7 @@ app = Flask(__name__)
 
 def ttl_lru_cache(ttl=None, maxsize=128, typed=False):
     """functools.lru_cache with a timeout
-    
+
     Works by automatically adding an ignored timestamp to the args that
     causes the args to change every interval, busting the cache.
     """
@@ -55,11 +55,16 @@ def resolve_hostname(host):
 
 @ttl_lru_cache(ttl=5)
 def is_up(host):
-    return subprocess.call(
-        ["timeout", "2", "ping", "-c", "1", "-w", "1", host],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    ) == 0
+    try:
+        subprocess.run(
+            ["ping", "-c", "1", "-w", "1", host],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=2
+        ).check_returncode()
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        return False
+    return True
 
 
 @app.route("/")
