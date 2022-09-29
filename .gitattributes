@@ -1,0 +1,2 @@
+# Treat lock file as binary
+package-lock.json binary

@@ -71,7 +71,7 @@ def is_up(host):
 @app.route("/<path:path>")
 def root(path="index.html"):
     """Serves the JS application"""
-    return send_from_directory("static", path)
+    return send_from_directory("dist", path)
 
 
 @app.route("/api/hosts")

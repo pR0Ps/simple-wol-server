@@ -6,7 +6,7 @@ set -e
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 # Build frontend
-if ! [ -d static/build ]; then
+if ! [ -d dist ]; then
     npm install
     npm run build
 fi
