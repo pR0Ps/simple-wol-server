@@ -41,7 +41,10 @@
 {#await promise}
   <IconButton disabled><Spinner /></IconButton>
 {:then result}
-  <IconButton on:click={handleClick} disabled={status === null || status === true}>
+  <IconButton
+    on:click={handleClick}
+    disabled={status === null || status === true}
+  >
     {#if result}
       ✓
     {:else}

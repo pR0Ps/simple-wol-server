@@ -15,7 +15,8 @@
   <Alert />
 </main>
 <footer>
-  Powered by <a href="https://github.com/pR0Ps/simple-wol-server">simple-wol-server</a>
+  Powered by
+  <a href="https://github.com/pR0Ps/simple-wol-server">simple-wol-server</a>
 </footer>
 
 <style>

@@ -8,7 +8,7 @@
 
   let promise = getHostStatus(false);
 
-  async function getHostStatus(showMsg=true) {
+  async function getHostStatus(showMsg = true) {
     status = null;
 
     let url = new URL("/api/check", location.href);
@@ -24,7 +24,7 @@
         if (data.val == null) {
           throw new Error(data.msg);
         }
-        if (showMsg){
+        if (showMsg) {
           show("message", data.msg);
         }
         status = data.val;
@@ -43,7 +43,10 @@
 {#await promise}
   <IconButton disabled><Spinner /></IconButton>
 {:then}
-  <IconButton on:click={handleClick} color={status ? "green" : status === null ? "" : "red"}>↻</IconButton>
+  <IconButton
+    on:click={handleClick}
+    color={status ? "green" : status === null ? "" : "red"}>↻</IconButton
+  >
 {/await}
 
 <slot {status} />
