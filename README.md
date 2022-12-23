@@ -20,7 +20,7 @@ Deploying in production
 Development
 ===========
 There are two parts to the application:
- - A static frontend built in JS using Svelte
+ - A static frontend built in JS using [SvelteKit](https://kit.svelte.dev/)
  - A backend built in Python
 
 Frontend
