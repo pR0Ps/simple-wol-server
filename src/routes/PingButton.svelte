@@ -4,30 +4,24 @@
 
   import Spinner from "./Spinner.svelte";
   import IconButton from "./IconButton.svelte";
-  import show from "./alert.js";
+  import { show } from "./alert.js";
+  import { parseJson } from "./response.js";
 
   let promise = getHostStatus(false);
 
   async function getHostStatus(showMsg = true) {
     status = null;
 
-    let url = new URL("/api/check", location.href);
-    url.searchParams.append("host", host);
-    return await fetch(url)
-      .then((resp) => {
-        if (!resp.ok) {
-          throw new Error(`${resp.status}: ${resp.statusText}`);
-        }
-        return resp.json();
-      })
+    let url = new URL(`/api/${host}`, location.href);
+    return await parseJson(fetch(url))
       .then((data) => {
-        if (data.val == null) {
-          throw new Error(data.msg);
+        if (data.status == null) {
+          throw new Error(`Invalid response when checking host '${host}'`);
         }
         if (showMsg) {
-          show("message", data.msg);
+          show("message", `Host '${host}' is ${data.status ? "up" : "down"}`);
         }
-        status = data.val;
+        status = data.status;
       })
       .catch((error) => {
         show("err", error);

@@ -2,40 +2,27 @@ simple-wol-server
 =================
 A simple web server for sending Wake-on-LAN packets.
 
+Built using [SvelteKit](https://kit.svelte.dev/)
 
 ![Screenshot](./screenshot.png)
 
+Deploying
+=========
 
-Deploying in production
-=======================
 1. Clone the repo
-2. Configure the backend: Edit `simple_wol.py` and add your hostnames and MAC addresses to the
-  `HOSTS` dictionary at the top.
-3. Edit `run.sh` and configure it for your own setup. By default it uses `uwsgi` to run the
-   application using 1 process and 8 threads on HTTP port 8387. See `uwsgi --help` for more options.
-4. Run `run.sh` to build and run the application. After verifying it works, use the included
-  `simple-wol-server.service` example to have it run at startup, restart if it fails, etc.
-
+2. Configure the backend: Edit `routes/api/[[host]]/+server.js` and add your
+   hostnames and MAC addresses to the `HOSTS` dictionary.
+3. Install dependencies: `npm install`
+4. Build application: `npm run build` (will generate a `build` folder)
+5. To verify it works, run the application locally with: `HOST=127.0.0.1 PORT=3000 node build/`
+6. Use the included `simple-wol-server.service` to have the project run at startup, restart if it fails, etc.
 
 Development
 ===========
-There are two parts to the application:
- - A static frontend built in JS using [SvelteKit](https://kit.svelte.dev/)
- - A backend built in Python
 
-Frontend
---------
-- Install dependencies: `npm install`
-- To build the application: `npm run build`
-- To run a development server that automatically rebuilds as changes are made: `npm run dev`
-
-Backend
--------
-- Create a Python virtual environment and enter it: `python3 -m venv .venv; source .venv/bin/activate`
-- Install the dependencies: `pip install -r requirements.txt`
-- Running `./simple_wol.py` will launch a development server on port 8080 with auto-reloading and
-  debugging turned on. Visit <http://localhost:8080> to see it.
-
+1. Install dependencies: `npm install`
+2. Run the development server: `npm run dev`
+3. Open the application in a browser to test it
 
 Licence
 =======

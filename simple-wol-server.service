@@ -9,8 +9,12 @@ Restart=on-failure
 # User with which to run the service (only valid when running as a system service)
 #User=
 
+# Configure where to bind the application
+Environment=HOST=127.0.0.1
+Environment=PORT=8387
+
 # Command to run the application
-ExecStart=/path/to/simple-wol-server/run.sh
+ExecStart=/path/to/node /path/to/simple-wol-server/build/
 
 [Install]
 WantedBy=multi-user.target

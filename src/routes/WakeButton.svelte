@@ -4,28 +4,17 @@
 
   import Spinner from "./Spinner.svelte";
   import IconButton from "./IconButton.svelte";
-  import show from "./alert.js";
+  import { show } from "./alert.js";
+  import { parseJson } from "./response.js";
 
   let promise;
 
   async function wakeHost() {
-    return await fetch("/api/wake", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ host: host }),
-    })
-      .then((resp) => {
-        if (!resp.ok) {
-          throw new Error(`${resp.status}: ${resp.statusText}`);
-        }
-        return resp.json();
-      })
-      .then((data) => {
-        if (!data.val) {
-          throw new Error(data.msg);
-        }
-        show("message", data.msg);
-        return data;
+    let url = new URL(`/api/${host}`, location.href);
+    return await parseJson(fetch(url, { method: "POST" }))
+      .then((_) => {
+        show("message", `Sent a WoL packet to ${host}`);
+        return true;
       })
       .catch((error) => {
         show("err", error);

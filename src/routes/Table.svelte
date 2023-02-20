@@ -2,24 +2,18 @@
   import Spinner from "./Spinner.svelte";
   import PingButton from "./PingButton.svelte";
   import WakeButton from "./WakeButton.svelte";
+  import { parseJson } from "./response.js";
 
   let statuses = {};
   let promise = getHosts();
 
   async function getHosts() {
-    return await fetch("/api/hosts")
-      .then((resp) => {
-        if (!resp.ok) {
-          throw new Error(`${resp.status}: ${resp.statusText}`);
-        }
-        return resp.json();
-      })
-      .then((data) => {
-        if (data.val.length == 0) {
-          throw new Error("No hosts configured");
-        }
-        return data.val;
-      });
+    return await parseJson(fetch("/api")).then((data) => {
+      if (data.length == 0) {
+        throw new Error("No hosts configured");
+      }
+      return data;
+    });
   }
 </script>
 
